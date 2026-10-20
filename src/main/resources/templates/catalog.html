@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html class="dark" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Obsidian Catalog - NegotiateX</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "surface-container-lowest": "#0e0e0e",
+                    "outline-variant": "#3c4a40",
+                    "primary-fixed-dim": "#31e193",
+                    "inverse-primary": "#006d43",
+                    "on-primary-fixed": "#002111",
+                    "on-primary": "#003920",
+                    "secondary-container": "#0566d9",
+                    "inverse-on-surface": "#313030",
+                    "outline": "#859588",
+                    "error-container": "#93000a",
+                    "secondary-fixed": "#d8e2ff",
+                    "tertiary-container": "#1bccb7",
+                    "surface-bright": "#393939",
+                    "on-tertiary-container": "#005148",
+                    "tertiary-fixed-dim": "#3cddc7",
+                    "on-tertiary-fixed-variant": "#005047",
+                    "on-primary-fixed-variant": "#005231",
+                    "primary": "#43ed9e",
+                    "primary-fixed": "#59fead",
+                    "on-surface-variant": "#bacbbd",
+                    "surface-container-highest": "#353534",
+                    "on-primary-container": "#005331",
+                    "surface-container": "#201f1f",
+                    "secondary": "#adc6ff",
+                    "tertiary-fixed": "#62fae3",
+                    "background": "#131313",
+                    "surface-dim": "#131313",
+                    "on-surface": "#e5e2e1",
+                    "on-secondary-fixed-variant": "#004395",
+                    "on-background": "#e5e2e1",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "surface-variant": "#353534",
+                    "on-secondary-container": "#e6ecff",
+                    "surface-container-high": "#2a2a2a",
+                    "on-tertiary": "#003731",
+                    "surface-tint": "#31e193",
+                    "primary-container": "#00d084",
+                    "inverse-surface": "#e5e2e1",
+                    "on-secondary": "#002e6a",
+                    "tertiary": "#4de8d3",
+                    "error": "#ffb4ab",
+                    "on-tertiary-fixed": "#00201c",
+                    "on-error-container": "#ffdad6",
+                    "on-error": "#690005",
+                    "on-secondary-fixed": "#001a42",
+                    "surface": "#131313",
+                    "surface-container-low": "#1c1b1b"
+                },
+                fontFamily: {
+                    headline: ["Inter"], body: ["Inter"], label: ["Inter"]
+                }
+            }
+        }
+    }
+</script>
+<style>
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    body { font-family: 'Inter', sans-serif; }
+    .ghost-border { outline: 1px solid rgba(60, 74, 64, 0.15); }
+</style>
+</head>
+<body class="bg-background text-on-surface min-h-screen">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#131313]/60 backdrop-blur-xl border-b border-outline-variant/30">
+    <div class="flex justify-between items-center px-8 py-4 w-full mx-auto">
+        <div class="flex items-center gap-12">
+            <a href="/" class="text-2xl font-black text-[#43ED9E] tracking-tighter">Negotiate<span class="text-white">X</span></a>
+            <nav class="hidden md:flex gap-6">
+                <a href="/catalog" class="text-sm font-medium text-primary border-b-2 border-primary transition">Catalog</a>
+                <a href="/offers" class="text-sm font-medium text-on-surface-variant hover:text-white transition">My Negotiations</a>
+                <a href="/orders" class="text-sm font-medium text-on-surface-variant hover:text-white transition">Orders</a>
+                <a th:if="${isSeller}" href="/seller/dashboard" class="text-sm font-medium text-on-surface-variant hover:text-white transition">Seller Dashboard</a>
+            </nav>
+        </div>
+        <div class="flex items-center gap-6">
+            <th:block th:if="${!isLoggedIn}">
+                <a href="/login" class="text-[#BACBBD] hover:text-[#E5E2E1] font-medium">Log In</a>
+                <a href="/register" class="bg-[#43ED9E] text-[#003920] px-6 py-2 rounded-full font-bold transition-all hover:bg-white">Sign Up</a>
+            </th:block>
+            <th:block th:if="${isLoggedIn}">
+                <span class="text-sm font-bold text-outline-variant mr-2" th:text="${username}">user@email.com</span>
+                <form action="/api/v1/auth/logout" method="post" class="inline">
+                    <button type="submit" class="bg-[#201f1f] text-[#E5E2E1] px-4 py-2 rounded-full text-sm font-bold transition-all hover:bg-[#353534]">Log Out</button>
+                </form>
+            </th:block>
+        </div>
+    </div>
+</nav>
+
+<div class="flex pt-24 min-h-screen">
+    <main class="w-full px-12 pb-24">
+        <!-- Page Header -->
+        <header class="py-12">
+            <h1 class="text-5xl font-black tracking-tighter text-on-surface mb-4">The Obsidian <span class="text-primary">Vault</span></h1>
+            <p class="text-on-surface-variant max-w-2xl">
+                Curated high-value assets and exclusive contracts. Every deal is open for negotiation.
+            </p>
+        </header>
+        
+        <!-- Dynamic Thymeleaf Product Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <div th:each="product : ${products}" class="group relative bg-surface-container rounded-xl overflow-hidden ghost-border hover:bg-surface-bright transition-all duration-300">
+                <div class="aspect-[4/5] relative overflow-hidden">
+                    <img th:src="${product.imageUrl != null ? product.imageUrl : 'https://lh3.googleusercontent.com/aida-public/AB6AXuA25yn5oYA_L3SS8iIwBVvmo9fv-5YaGCQnqEbcGnG947lEqwjVzalqrBg-2LtsgwXhKbTo1W7BBnK4HfxEHvBqgV_COh8EsSiV9lWkNh7c7oAkgJlGP6zR_7x6mfmwtuJE_j823DemcZ6GeHjQOZNpRi7VRTOkcpPLWJEepTVhW9KvUdGxfsmbCc7A7GGjZIAmiJh52LsdrpvstpErgSoQsQd2oNCnROWlDrsvTcIkEQzUK8Ybhh95I04KTui8WQEcv63SATKLtE8'}" 
+                         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"/>
+                    <div class="absolute inset-0 bg-gradient-to-t from-surface-container via-transparent to-transparent opacity-80"></div>
+                    <div class="absolute top-4 left-4 flex flex-col gap-2">
+                        <span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-lg">
+                            <span class="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></span>
+                            Live Pulse
+                        </span>
+                        <span th:if="${product.isNearExpiry}" class="bg-error-container/90 backdrop-blur-md text-on-error-container px-3 py-1 rounded-full text-[10px] font-black uppercase flex items-center gap-1 shadow-lg">
+                            <span class="material-symbols-outlined text-xs">timer</span> Fast Ending
+                        </span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 th:text="${product.name}" class="text-xl font-bold text-on-surface group-hover:text-primary mb-2 line-clamp-1">Product Name</h3>
+                    <p th:text="${product.description}" class="text-on-surface-variant text-sm mb-6 line-clamp-2">Product description...</p>
+                    <div class="flex items-end justify-between">
+                        <div>
+                            <!-- IF user has unlocked a gamified price -->
+                            <th:block th:if="${product.personalizedDiscountPrice != null}">
+                                <div th:if="${product.isBestDealUnlocked}" class="mb-2">
+                                     <span class="bg-primary/20 text-primary border border-primary/30 px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest flex w-max items-center gap-1">
+                                         <span class="material-symbols-outlined text-[12px]">auto_awesome</span> Best Deal Unlocked
+                                     </span>
+                                </div>
+                                <div th:unless="${product.isBestDealUnlocked}" class="mb-2">
+                                     <span class="bg-secondary-container/20 text-secondary border border-secondary/30 px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest flex w-max items-center gap-1">
+                                         <span class="material-symbols-outlined text-[12px]">trending_down</span> Trust Bonus Applied
+                                     </span>
+                                </div>
+                                <p class="text-[10px] uppercase tracking-[0.1em] text-outline mb-1 line-through" th:text="'$' + ${product.basePrice} + ' Base'"></p>
+                                <span th:text="'$' + ${product.personalizedDiscountPrice}" class="text-3xl font-black text-primary drop-shadow-[0_0_8px_rgba(49,225,147,0.5)]">$0.00</span>
+                            </th:block>
+
+                            <!-- DEFAULT rendering if no discount -->
+                            <th:block th:if="${product.personalizedDiscountPrice == null}">
+                                <p class="text-[10px] uppercase tracking-[0.1em] text-outline mb-1">Base Price</p>
+                                <span th:text="'$' + ${product.basePrice}" class="text-2xl font-black text-primary">$0.00</span>
+                            </th:block>
+                        </div>
+
+                        <button th:if="${!isSeller}" 
+                                th:data-id="${product.id}"
+                                th:data-name="${product.name}"
+                                th:data-price="${product.personalizedDiscountPrice != null ? product.personalizedDiscountPrice : product.basePrice}"
+                                onclick="openOfferModal(this.getAttribute('data-id'), this.getAttribute('data-name'), this.getAttribute('data-price'))"
+                                class="bg-surface-container-highest hover:bg-primary hover:text-on-primary p-3 rounded-lg transition-all active:scale-90 relative group/btn">
+                            <span class="material-symbols-outlined">gavel</span>
+                            <span class="absolute -top-10 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover/btn:opacity-100 transition-opacity">Make Offer</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Fallback if no products -->
+            <div th:if="${#lists.isEmpty(products)}" class="col-span-full py-12 text-center text-outline">
+                <span class="material-symbols-outlined text-4xl mb-2">inventory_2</span>
+                <p>No products listed yet. Be the first to add to the Obsidian Vault!</p>
+            </div>
+        </div>
+    </main>
+</div>
+<!-- Offer Modal -->
+<div id="offerModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center">
+    <div class="bg-surface-container rounded-xl border border-outline-variant/30 p-8 w-full max-w-md shadow-2xl">
+        <h3 class="text-2xl font-bold text-primary mb-2">Initialize Negotiation</h3>
+        <p class="text-on-surface-variant text-sm mb-6">Targeting asset: <span id="modalProductName" class="font-bold text-on-surface"></span></p>
+        
+        <form id="offerForm" class="space-y-6">
+            <input type="hidden" id="modalProductId"/>
+            
+            <div>
+                <label class="block text-xs font-bold text-on-surface-variant uppercase mb-2">Your Offer (USD)</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">$</span>
+                    <input id="modalPrice" required type="number" step="0.01" class="w-full bg-surface-container-low border-none rounded-lg py-4 pl-10 focus:ring-1 focus:ring-primary/40 text-lg font-mono"/>
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-xs font-bold text-on-surface-variant uppercase mb-2">Initial Message (Optional)</label>
+                <textarea id="modalMessage" rows="3" class="w-full bg-surface-container-low border-none rounded-lg py-4 px-5 focus:ring-1 focus:ring-primary/40"></textarea>
+            </div>
+            
+            <div class="flex gap-4 pt-4">
+                <button type="button" onclick="closeOfferModal()" class="flex-1 py-3 rounded-lg border border-outline-variant/30 font-bold hover:bg-surface-container-highest transition-all">Cancel</button>
+                <button type="submit" class="flex-1 py-3 bg-primary text-on-primary font-bold rounded-lg hover:brightness-110 transition-all text-[#003920]">Transmit Offer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openOfferModal(id, name, basePrice) {
+    document.getElementById('modalProductId').value = id;
+    document.getElementById('modalProductName').textContent = name;
+    document.getElementById('modalPrice').placeholder = "Base: $" + basePrice;
+    document.getElementById('offerModal').classList.remove('hidden');
+}
+
+function closeOfferModal() {
+    document.getElementById('offerModal').classList.add('hidden');
+    document.getElementById('offerForm').reset();
+}
+
+document.getElementById('offerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Auth Check manually handled below
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.textContent = "Transmitting...";
+    btn.disabled = true;
+    
+    const request = {
+        productId: document.getElementById('modalProductId').value,
+        price: parseFloat(document.getElementById('modalPrice').value),
+        quantity: 1,
+        message: document.getElementById('modalMessage').value
+    };
+    
+    try {
+        const response = await fetch('/api/v1/offers', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(request)
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            if (data.status === 'REJECTED') {
+                 alert('❌ OFFER REJECTED: Your bid was violently below the seller\'s absolute floor limit.');
+            } else {
+                 alert('✅ TRANSMIT SUCCESS: Negotiation is now PENDING. The seller has been notified.');
+            }
+            closeOfferModal();
+        } else {
+            if(response.status === 403) {
+                alert('ACCESS DENIED: You must log in as a BUYER first.');
+                window.location.href = '/login';
+            } else {
+                const err = await response.text();
+                alert('Transmission Failure: ' + err);
+            }
+        }
+    } catch(err) {
+        alert('Network Failure ' + err);
+    } finally {
+        btn.textContent = "Transmit Offer";
+        btn.disabled = false;
+    }
+});
+</script>
+</body></html>

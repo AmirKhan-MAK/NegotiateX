@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8" />
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet" />
+	<link
+		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+		rel="stylesheet" />
+	<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+	<script id="tailwind-config">
+		tailwind.config = {
+			darkMode: "class",
+			theme: {
+				extend: {
+					"colors": {
+						"surface-container-lowest": "#0e0e0e",
+						"outline-variant": "#3c4a40",
+						"primary-fixed-dim": "#31e193",
+						"inverse-primary": "#006d43",
+						"on-primary-fixed": "#002111",
+						"on-primary": "#003920",
+						"secondary-container": "#0566d9",
+						"inverse-on-surface": "#313030",
+						"outline": "#859588",
+						"error-container": "#93000a",
+						"secondary-fixed": "#d8e2ff",
+						"tertiary-container": "#1bccb7",
+						"surface-bright": "#393939",
+						"on-tertiary-container": "#005148",
+						"tertiary-fixed-dim": "#3cddc7",
+						"on-tertiary-fixed-variant": "#005047",
+						"on-primary-fixed-variant": "#005231",
+						"primary": "#43ed9e",
+						"primary-fixed": "#59fead",
+						"on-surface-variant": "#bacbbd",
+						"surface-container-highest": "#353534",
+						"on-primary-container": "#005331",
+						"surface-container": "#201f1f",
+						"secondary": "#adc6ff",
+						"tertiary-fixed": "#62fae3",
+						"background": "#131313",
+						"surface-dim": "#131313",
+						"on-surface": "#e5e2e1",
+						"on-secondary-fixed-variant": "#004395",
+						"on-background": "#e5e2e1",
+						"secondary-fixed-dim": "#adc6ff",
+						"surface-variant": "#353534",
+						"on-secondary-container": "#e6ecff",
+						"surface-container-high": "#2a2a2a",
+						"on-tertiary": "#003731",
+						"surface-tint": "#31e193",
+						"primary-container": "#00d084",
+						"inverse-surface": "#e5e2e1",
+						"on-secondary": "#002e6a",
+						"tertiary": "#4de8d3",
+						"error": "#ffb4ab",
+						"on-tertiary-fixed": "#00201c",
+						"on-error-container": "#ffdad6",
+						"on-error": "#690005",
+						"on-secondary-fixed": "#001a42",
+						"surface": "#131313",
+						"surface-container-low": "#1c1b1b"
+					},
+					"borderRadius": {
+						"DEFAULT": "0.125rem",
+						"lg": "0.25rem",
+						"xl": "0.5rem",
+						"full": "0.75rem"
+					},
+					"fontFamily": {
+						"headline": ["Inter"],
+						"body": ["Inter"],
+						"label": ["Inter"]
+					}
+				},
+			},
+		}
+	</script>
+	<style>
+		.material-symbols-outlined {
+			font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+			vertical-align: middle;
+		}
+
+		body {
+			font-family: 'Inter', sans-serif;
+			background-color: #131313;
+			color: #e5e2e1;
+		}
+
+		.glass-panel {
+			background: rgba(19, 19, 19, 0.6);
+			backdrop-filter: blur(20px);
+			-webkit-backdrop-filter: blur(20px);
+		}
+	</style>
+</head>
+
+<body class="bg-background text-on-surface">
+	<!-- TopNavBar -->
+	<nav
+		class="fixed top-0 w-full z-50 bg-[#131313]/60 backdrop-blur-xl transition-colors duration-300 shadow-[0_40px_40px_0_rgba(0,0,0,0.06)] font-['Inter'] tracking-tight">
+		<div class="flex justify-between items-center px-8 py-4 w-full max-w-[1920px] mx-auto">
+			<div class="flex items-center gap-12">
+				<a href="/"
+					class="text-2xl font-black tracking-tighter text-[#43ED9E] hover:opacity-80 transition-opacity">Obsidian
+					Market</a>
+				<!-- Search Cluster -->
+				<div
+					class="hidden md:flex items-center bg-surface-container-lowest rounded-lg px-4 py-2 w-96 group focus-within:ring-1 ring-primary/40 transition-all">
+					<span class="material-symbols-outlined text-on-surface-variant mr-2">search</span>
+					<input
+						class="bg-transparent border-none focus:ring-0 text-sm text-on-surface placeholder:text-on-surface-variant w-full"
+						placeholder="Search premium assets..." type="text" />
+				</div>
+				<div class="hidden md:flex items-center gap-8">
+					<a class="text-[#43ED9E] font-bold border-b-2 border-[#43ED9E] pb-1" href="/">Explore</a>
+					<a class="text-[#BACBBD] hover:text-[#E5E2E1] transition-all" href="#">Negotiations</a>
+					<a class="text-[#BACBBD] hover:text-[#E5E2E1] transition-all" href="#">Deals</a>
+				</div>
+			</div>
+			<div class="flex items-center gap-6">
+				<div class="flex items-center gap-4 mr-4">
+					<button
+						class="text-on-surface-variant hover:text-primary transition-all scale-95 active:scale-90 duration-200">
+						<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+					</button>
+					<button
+						class="text-on-surface-variant hover:text-primary transition-all scale-95 active:scale-90 duration-200">
+						<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+					</button>
+				</div>
+				<div class="flex items-center gap-3">
+					<a href="/login"
+						class="text-on-surface-variant hover:text-on-surface font-medium text-sm transition-all">Sign
+						In</a>
+					<a href="/register"
+						class="bg-primary text-on-primary px-6 py-2 rounded-lg font-bold text-sm hover:opacity-90 transition-all scale-95 active:scale-90">Join</a>
+				</div>
+			</div>
+		</div>
+	</nav>
+	<main class="pt-24">
+		<!-- Hero Section -->
+		<section class="relative min-h-[870px] flex items-center px-8 overflow-hidden">
+			<div class="absolute inset-0 z-0">
+				<div
+					class="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary-container/5">
+				</div>
+				<img class="w-full h-full object-cover opacity-40"
+					data-alt="Dark obsidian textures with glowing emerald neon pulses and flowing liquid glass reflections, cinematic high-end digital art style"
+					src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzek6KvU7aBLq1-TG4G-O6L2HDA8oryWEJdkeWccs0t7As8wWiTEY-whOEQ850zt80Ollhr4kp4OXz3pbNLhjES2_31YEFpTZqOu23QAto83bQyl59nmX_1Pn5y-zWNSrRQgPvTpth29PkVJtsgW1WUnKWIfRod29ndL1r1tMvNxu4PPKCWPHlN6Zv4E85_W29HEfcnFtcft5WtsbAhzuKkDGyA0Xs2UfWb0jPkVNIGeZruxibh564CgB7pZtab60PVEawtipybaw" />
+			</div>
+			<div
+				class="relative z-10 max-w-[1920px] mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+				<div class="space-y-8">
+					<div
+						class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary-container/20 border border-secondary-container/30">
+						<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+						<span class="text-primary text-xs font-bold tracking-widest uppercase">Live Negotiation
+							Pulse</span>
+					</div>
+					<h1 class="text-7xl lg:text-8xl font-black tracking-tighter leading-[0.9] text-on-surface">
+						EVERY PRICE IS A <span class="text-primary">CONVERSATION.</span>
+					</h1>
+					<p class="text-xl text-on-surface-variant max-w-xl font-medium leading-relaxed">
+						The world's first prestige market for near-expiry luxury assets. Negotiate real-time with
+						sellers as the clock winds down.
+					</p>
+					<div class="flex flex-wrap gap-4 pt-4">
+						<button
+							class="bg-primary text-on-primary px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-3 hover:shadow-[0_0_20px_rgba(67,237,158,0.3)] transition-all scale-95 active:scale-90">
+							Start Negotiating
+							<span class="material-symbols-outlined">trending_down</span>
+						</button>
+						<button
+							class="bg-surface-container-high border border-outline-variant/20 px-8 py-4 rounded-xl font-bold text-lg text-on-surface hover:bg-surface-bright transition-all scale-95 active:scale-90">
+							View Near-Expiry
+						</button>
+					</div>
+				</div>
+				<!-- Asymmetric Bento Display -->
+				<div class="hidden lg:grid grid-cols-2 gap-4 h-[600px]">
+					<div
+						class="bg-surface-container p-6 rounded-2xl flex flex-col justify-between border border-outline-variant/10">
+						<div class="flex justify-between">
+							<span class="text-primary font-bold text-2xl">NegotiateX</span>
+							<span class="material-symbols-outlined text-primary-fixed-dim">query_stats</span>
+						</div>
+						<div>
+							<p class="text-on-surface-variant text-sm font-medium">Average Discount</p>
+							<h3 class="text-5xl font-black text-on-surface">42.8%</h3>
+						</div>
+					</div>
+					<div
+						class="bg-surface-container-highest p-6 rounded-2xl relative overflow-hidden group border border-outline-variant/10">
+						<img class="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:scale-110 transition-transform duration-700"
+							data-alt="Extreme close up of a luxury titanium watch movement, mechanical gears exposed, dramatic dark lighting with emerald highlights"
+							src="https://lh3.googleusercontent.com/aida-public/AB6AXuCydisITPxdffEZhELj0onlSJuV9QuXwbNhhVzG6yy7KkkMkbSdMKsVo2-J1h9UgmZX2ASSso-LXba-2xiyCR2oZjK1Um8Wyb2OGZtXWwVUNgIBpdQlY9EeAXoi9zaq7qpC9bMcCM7YghVuMM5ePq8FsxXSmuk9ij4qWdfxJIv7noYSEwerEtbAbTQcNJC4H3jFxDuZcOwfswUnzuktJFb_ZXkRSSz5tPCA4ZKOKW8WyqTqwHE9JrXytnE29pWmK_RqWmoVMa_poNY" />
+						<div class="relative z-10">
+							<span
+								class="bg-primary text-on-primary text-[10px] px-2 py-1 rounded font-bold uppercase">Trending</span>
+						</div>
+					</div>
+					<div
+						class="col-span-2 bg-gradient-to-r from-surface-container to-surface-container-low p-8 rounded-2xl flex items-center justify-between border border-outline-variant/10">
+						<div class="space-y-2">
+							<p class="text-on-surface-variant text-sm tracking-widest uppercase">Active Bids</p>
+							<div class="flex -space-x-3">
+								<div class="w-10 h-10 rounded-full border-2 border-surface-container overflow-hidden">
+									<img class="w-full h-full object-cover"
+										data-alt="Professional portrait of a high-end merchant"
+										src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYr_lww4MnsrcX7DXabfh49p_-p-BcimaScyYRVXUD2vkl3bo5Ljqe3z5nOIT6opxhICu9mQ4Rqf_DiGSjMezYVnYrH2qKb44Xit_YLZ8w830RePeWA_l1wqECCKupX-c1V1gjluHEKAPS_jD07X71M_3cENwLGwpHZs6lNXtrEYnpZbbZ5FD6hgdaPzxSfs69pW3djNwgvYfeAMJ7aUeLrA3LydVwGBR7uo-k5aZYm7x3HDZq-eZCTFMua2KFx6GVnhPQM3bGZz8" />
+								</div>
+								<div class="w-10 h-10 rounded-full border-2 border-surface-container overflow-hidden">
+									<img class="w-full h-full object-cover"
+										data-alt="Modern profile photo of a digital entrepreneur"
+										src="https://lh3.googleusercontent.com/aida-public/AB6AXuDr7N0nUPvNekA07WZ2IotxgD47Oj6qHHkv2HXBCI5YGZJ-D_aNBdlz8H_MJVO1CO4QF45zEQDMgZgBG4kc28kSq5JhdcT-otJ-perLbaoMK6z8fkauZwFRQhEQYu9n42YbAyhfgV4pCdzWzTGlZpq3JsPYgSXNhSf9KOjwPbuGmTR8v4WpIoEfWc1FRVDWOaUvsUtsJWMdHiWcAPyzxWHElNgwPgRiwUT2vsyx11jcfsEs27pOnc15BQNtUuEV-OKALuGL2FEF3PU" />
+								</div>
+								<div class="w-10 h-10 rounded-full border-2 border-surface-container overflow-hidden">
+									<img class="w-full h-full object-cover" data-alt="Sophisticated collector profile"
+										src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6k5z1AL785oZMqvceIoFcv9iNiuok_5RD0zUWfJAkLJH0VVIszZQhHvJ5YRQcKHKsPX6CLarJ-yEfe8Ivjv8bebdTdsZ7iwSo63w_SAFXG8IYt6-9eKBvISUHka6xdIiN1TTcqinKGC0jHFjqKfzzXsCk0kmazNnPn2shALyVSrg8KKiFzo0xoaBk3wdJDaM5vmqI8V-9mxHMv66VyF7jCBnKff_xxIEOFWblsyYDSZ9n4SqT_0nxRz0u-Z8_uw8OelN8YrUISEg" />
+								</div>
+								<div
+									class="w-10 h-10 rounded-full border-2 border-surface-container bg-primary-container flex items-center justify-center text-xs font-bold text-on-primary-container">
+									+12
+								</div>
+							</div>
+						</div>
+						<div class="text-right">
+							<p class="text-primary font-bold text-sm">Negotiations Live</p>
+							<p class="text-4xl font-black text-on-surface">1,204</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<!-- Near-Expiry Deals Highlight -->
+		<section class="py-24 px-8 max-w-[1920px] mx-auto">
+			<div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+				<div class="space-y-2">
+					<span class="text-primary font-bold tracking-widest text-sm uppercase">Closing Soon</span>
+					<h2 class="text-5xl font-black tracking-tighter">THE FINAL HOUR</h2>
+				</div>
+				<div class="flex gap-4">
+					<button
+						class="p-3 rounded-full border border-outline-variant/20 hover:border-primary/50 text-on-surface-variant hover:text-primary transition-all">
+						<span class="material-symbols-outlined">arrow_back</span>
+					</button>
+					<button
+						class="p-3 rounded-full border border-outline-variant/20 hover:border-primary/50 text-on-surface-variant hover:text-primary transition-all">
+						<span class="material-symbols-outlined">arrow_forward</span>
+					</button>
+				</div>
+			</div>
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+				<!-- Deal Card 1 -->
+				<div
+					class="group bg-surface-container-low rounded-2xl overflow-hidden hover:bg-surface-container-high transition-all duration-300 border border-outline-variant/5">
+					<div class="relative h-64 overflow-hidden">
+						<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+							data-alt="Ultra-sleek carbon fiber electric hypercar detail, headlight glowing emerald green, high-tech garage background"
+							src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqxzGHsv7dxKsuxS52a6L5TVbSF-NUcv98AGis9kDywn6Hyi1Y6zXU8QO3kzp8GvJXLf4LcyLDYCs-uF1hWN9cYgGfYRSGzQjMFh_sL1mv7q1DTV1ZwBaejvPCgk3C5sJMLuNf4bsRJL-xWT3eD7Y_WmnnhzhclJiKVdWlSWfx4JFZ1lsmXDAPiGi-BmRmr3aU40xKBThvHSTAVm4IlDIjFkiJEeI_jA7AbZTWFxdA9sX7v0cToQbHUNHssNdiRvCOj66Jn1VWeKE" />
+						<div class="absolute top-4 left-4 flex gap-2">
+							<span
+								class="bg-primary text-on-primary px-3 py-1 rounded-full text-xs font-bold">-65%</span>
+							<span
+								class="bg-surface-container-lowest/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-medium text-on-surface">Near-Expiry</span>
+						</div>
+						<div
+							class="absolute bottom-4 right-4 bg-error-container/80 backdrop-blur-md px-3 py-1 rounded-lg text-xs font-bold text-white flex items-center gap-1">
+							<span class="material-symbols-outlined text-sm">schedule</span>
+							02:14:55
+						</div>
+					</div>
+					<div class="p-6 space-y-4">
+						<div>
+							<h3 class="text-lg font-bold text-on-surface mb-1">Carbon X-Edition Slot</h3>
+							<p class="text-sm text-on-surface-variant">Priority Production Delivery</p>
+						</div>
+						<div class="flex justify-between items-end">
+							<div>
+								<p class="text-xs text-outline line-through">$125,000</p>
+								<p class="text-2xl font-black text-primary">$43,750</p>
+							</div>
+							<button
+								class="bg-surface-container-highest p-3 rounded-xl text-primary hover:bg-primary hover:text-on-primary transition-all active:scale-90">
+								<span class="material-symbols-outlined">gavel</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<!-- Deal Card 2 -->
+				<div
+					class="group bg-surface-container-low rounded-2xl overflow-hidden hover:bg-surface-container-high transition-all duration-300 border border-outline-variant/5">
+					<div class="relative h-64 overflow-hidden">
+						<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+							data-alt="Private island villa aerial view at dusk, infinity pool glowing emerald, luxury tropical resort aesthetic"
+							src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhbiU1UXaIDf2lWI7Q7IClxPvhaQAW7ZycRNYv2PR8_1Iq-8hzN_S5Ho2AKJ7qrgIq1g06g4VR9LgdYfAokdPtFIuIe9T-OPV7aTmSbySpeOPoB_PR5RSx9rMKfk6RJVlep5b63qDqH-kbQp_k3QHiHqPX3d0f61Bxdu0Ob0ViR7304OUUonIdq_mGZj47XSqEbZn684USe1ghtCmqmgFizvH61_IDCkcGbyI2pW-y_SMbKmvbV-Jy9WbWqZ5_LBSShnB9-N-XsNA" />
+						<div class="absolute top-4 left-4 flex gap-2">
+							<span
+								class="bg-primary text-on-primary px-3 py-1 rounded-full text-xs font-bold">-40%</span>
+						</div>
+						<div
+							class="absolute bottom-4 right-4 bg-error-container/80 backdrop-blur-md px-3 py-1 rounded-lg text-xs font-bold text-white flex items-center gap-1">
+							<span class="material-symbols-outlined text-sm">schedule</span>
+							08:42:10
+						</div>
+					</div>
+					<div class="p-6 space-y-4">
+						<div>
+							<h3 class="text-lg font-bold text-on-surface mb-1">Azure Reef Stay</h3>
+							<p class="text-sm text-on-surface-variant">7-Day All Inclusive Package</p>
+						</div>
+						<div class="flex justify-between items-end">
+							<div>
+								<p class="text-xs text-outline line-through">$18,400</p>
+								<p class="text-2xl font-black text-primary">$11,040</p>
+							</div>
+							<button
+								class="bg-surface-container-highest p-3 rounded-xl text-primary hover:bg-primary hover:text-on-primary transition-all active:scale-90">
+								<span class="material-symbols-outlined">gavel</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<!-- Deal Card 3 -->
+				<div
+					class="group bg-surface-container-low rounded-2xl overflow-hidden hover:bg-surface-container-high transition-all duration-300 border border-outline-variant/5">
+					<div class="relative h-64 overflow-hidden">
+						<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+							data-alt="High-end server cluster with glowing green fiber optics, industrial tech aesthetic, bokeh background"
+							src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzeQ3A6l-Ui4dpkwjos87dz80Z_IsWcEt1A70djNrZRl50To1qCL9EygRv-aR8Er-BpkcbYDZxO2s1dHdqGmrKFBEewE5RAjLrdwWLETDDOmOLREbNCWbXskl-FndzeveFQJT7-PETKN8P1Pa0MpD5kxO7OUPhFZieOELLVHJ60wGD-29p2CLObR6JA326VEuv_djWFLU7AXkqPRMzU5sYnm3K2ko5O-r-Vq5qgCywnEpduSTvX0Gca9ukvT7pBxsMkQXJUFzGeRc" />
+						<div class="absolute top-4 left-4 flex gap-2">
+							<span
+								class="bg-primary text-on-primary px-3 py-1 rounded-full text-xs font-bold">-80%</span>
+						</div>
+						<div
+							class="absolute bottom-4 right-4 bg-error-container/80 backdrop-blur-md px-3 py-1 rounded-lg text-xs font-bold text-white flex items-center gap-1">
+							<span class="material-symbols-outlined text-sm">schedule</span>
+							00:15:30
+						</div>
+					</div>
+					<div class="p-6 space-y-4">
+						<div>
+							<h3 class="text-lg font-bold text-on-surface mb-1">Compute Cluster Alpha</h3>
+							<p class="text-sm text-on-surface-variant">24h Priority Reserved Cycle</p>
+						</div>
+						<div class="flex justify-between items-end">
+							<div>
+								<p class="text-xs text-outline line-through">$4,200</p>
+								<p class="text-2xl font-black text-primary">$840</p>
+							</div>
+							<button
+								class="bg-surface-container-highest p-3 rounded-xl text-primary hover:bg-primary hover:text-on-primary transition-all active:scale-90">
+								<span class="material-symbols-outlined">gavel</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<!-- Deal Card 4 -->
+				<div
+					class="group bg-surface-container-low rounded-2xl overflow-hidden hover:bg-surface-container-high transition-all duration-300 border border-outline-variant/5">
+					<div class="relative h-64 overflow-hidden">
+						<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+							data-alt="Aged rare bottle of wine in a custom carbon fiber case, dramatic studio lighting, dark background"
+							src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_zkbwZ-M6zIoNpW-3jbvUeqb3Zi1j5UNFktJZvdjSvhwB_ACYyX1JDxgQJgwVFcN6ttszV3SS1Zm6V4L2Wi1mg5jNUle4v1fyc2xrfQGQTdxQTcjrMQPTxOrnbNUHaAULKHtCtl8n9dOu_eJVmEj13x7wXgCjTCYytM7POpLuogA1sw3yQGEexy6QVbloQNSMOfP-ot7DFwnOYcQWU5Ay4S6S3P1DzwjHmfqeVbHYG408qc-7ZSSm3pcdyLpEqH9OUD4nctxAVq4" />
+						<div class="absolute top-4 left-4 flex gap-2">
+							<span
+								class="bg-primary text-on-primary px-3 py-1 rounded-full text-xs font-bold">-25%</span>
+						</div>
+						<div
+							class="absolute bottom-4 right-4 bg-error-container/80 backdrop-blur-md px-3 py-1 rounded-lg text-xs font-bold text-white flex items-center gap-1">
+							<span class="material-symbols-outlined text-sm">schedule</span>
+							14:22:01
+						</div>
+					</div>
+					<div class="p-6 space-y-4">
+						<div>
+							<h3 class="text-lg font-bold text-on-surface mb-1">Vintage Obsidian 2042</h3>
+							<p class="text-sm text-on-surface-variant">Limited Edition Collection</p>
+						</div>
+						<div class="flex justify-between items-end">
+							<div>
+								<p class="text-xs text-outline line-through">$2,800</p>
+								<p class="text-2xl font-black text-primary">$2,100</p>
+							</div>
+							<button
+								class="bg-surface-container-highest p-3 rounded-xl text-primary hover:bg-primary hover:text-on-primary transition-all active:scale-90">
+								<span class="material-symbols-outlined">gavel</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<!-- Featured Products - Grid Layout -->
+		<section class="py-24 px-8 bg-surface-container-lowest">
+			<div class="max-w-[1920px] mx-auto">
+				<div class="mb-16">
+					<h2 class="text-5xl font-black tracking-tighter mb-4">CURATED FOR THE ELITE</h2>
+					<div class="h-1 w-24 bg-primary"></div>
+				</div>
+				<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+					<!-- Large Featured -->
+					<div class="md:col-span-8 relative rounded-3xl overflow-hidden min-h-[500px] group">
+						<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+							data-alt="Minimalist architectural penthouse interior, floor to ceiling windows overlooking futuristic city, twilight lighting, deep emerald accents"
+							src="https://lh3.googleusercontent.com/aida-public/AB6AXuCK41_Lt8Pk3LFx_0aASanJLn-K1V0iCy3rNlIrNr832qNktYxUIBkux8Zya3rsYnsb9CXPmfBxU6uNEo6XijnWlE4LSEC_0g9Z3dpmJ3ykKGi0wtJ-MG7jtI6KWGcV_xAQYxqkLd89ysm8gHWXUi6UfrTClEEMX770f7mE4L4E-brCkTlj6Sk-RbNAXJhVkk6GVAg2ruA3mmBlSE5UuqYNio9WrOhQkA-7JT7Pho134pl5Kt8mqv3lamd4bL7AJ13cUe-B0lBr86k" />
+						<div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+						<div class="absolute bottom-0 left-0 p-12 w-full flex justify-between items-end">
+							<div class="max-w-xl space-y-4">
+								<span
+									class="bg-secondary-container text-on-secondary-container px-4 py-1 rounded text-xs font-black tracking-widest uppercase">Verified
+									Asset</span>
+								<h3 class="text-5xl font-black text-white">SKYLINE RESIDENCY TOKEN</h3>
+								<p class="text-on-surface-variant text-lg">Fractional ownership of the premier Zenith
+									Tower penthouse. Immediate negotiation open.</p>
+							</div>
+							<div class="text-right">
+								<p class="text-primary text-4xl font-black tracking-tighter">$1.2M</p>
+								<p class="text-on-surface-variant text-sm font-bold uppercase tracking-widest">Starting
+									Price</p>
+							</div>
+						</div>
+					</div>
+					<!-- Right Column Featured -->
+					<div class="md:col-span-4 flex flex-col gap-8">
+						<div
+							class="flex-1 bg-surface-container p-8 rounded-3xl border border-outline-variant/10 hover:border-primary/30 transition-all group">
+							<div class="flex justify-between mb-8">
+								<span class="material-symbols-outlined text-4xl text-primary">diamond</span>
+								<span
+									class="material-symbols-outlined text-outline group-hover:text-primary transition-all">north_east</span>
+							</div>
+							<h4 class="text-2xl font-black mb-2 uppercase">Obsidian Pass</h4>
+							<p class="text-on-surface-variant text-sm mb-6">Lifetime access to zero-fee negotiations and
+								priority bidding queues.</p>
+							<div class="flex items-center justify-between">
+								<span class="text-xl font-black text-on-surface">$12,500</span>
+								<span
+									class="text-primary text-xs font-bold px-2 py-1 bg-primary/10 rounded">Trending</span>
+							</div>
+						</div>
+						<div
+							class="flex-1 bg-surface-container p-8 rounded-3xl border border-outline-variant/10 hover:border-primary/30 transition-all group">
+							<div class="flex justify-between mb-8">
+								<span class="material-symbols-outlined text-4xl text-primary">lock</span>
+								<span
+									class="material-symbols-outlined text-outline group-hover:text-primary transition-all">north_east</span>
+							</div>
+							<h4 class="text-2xl font-black mb-2 uppercase">Vault Security</h4>
+							<p class="text-on-surface-variant text-sm mb-6">Next-gen cold storage and multi-sig
+								insurance for your won assets.</p>
+							<div class="flex items-center justify-between">
+								<span class="text-xl font-black text-on-surface">$4,200</span>
+								<span
+									class="text-primary text-xs font-bold px-2 py-1 bg-primary/10 rounded">Essential</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+	<footer class="py-20 px-8 border-t border-outline-variant/10">
+		<div class="max-w-[1920px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+			<div class="col-span-1 md:col-span-2 space-y-6">
+				<span class="text-3xl font-black tracking-tighter text-primary">NEGOTIATEX</span>
+				<p class="text-on-surface-variant max-w-sm leading-relaxed">
+					The premier destination for high-stakes negotiation. Experience the thrill of real-time price
+					discovery on luxury assets closing soon.
+				</p>
+				<div class="flex gap-4">
+					<div
+						class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary cursor-pointer transition-all">
+						<span class="material-symbols-outlined">share</span>
+					</div>
+					<div
+						class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary cursor-pointer transition-all">
+						<span class="material-symbols-outlined">public</span>
+					</div>
+				</div>
+			</div>
+			<div>
+				<h5 class="text-on-surface font-bold mb-6 uppercase tracking-widest text-xs">Marketplace</h5>
+				<ul class="space-y-4 text-on-surface-variant text-sm">
+					<li><a class="hover:text-primary transition-colors" href="#">Explore All</a></li>
+					<li><a class="hover:text-primary transition-colors" href="#">Digital Assets</a></li>
+					<li><a class="hover:text-primary transition-colors" href="#">Luxury Goods</a></li>
+					<li><a class="hover:text-primary transition-colors" href="#">Real Estate Tokens</a></li>
+				</ul>
+			</div>
+			<div>
+				<h5 class="text-on-surface font-bold mb-6 uppercase tracking-widest text-xs">Platform</h5>
+				<ul class="space-y-4 text-on-surface-variant text-sm">
+					<li><a class="hover:text-primary transition-colors" href="#">How it Works</a></li>
+					<li><a class="hover:text-primary transition-colors" href="#">Verification</a></li>
+					<li><a class="hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
+					<li><a class="hover:text-primary transition-colors" href="#">Terms of Use</a></li>
+				</ul>
+			</div>
+		</div>
+		<div
+			class="max-w-[1920px] mx-auto mt-20 pt-8 border-t border-outline-variant/5 flex justify-between items-center text-xs text-outline">
+			<span>© 2024 Obsidian Market. Engineered for the 1%.</span>
+			<span>SECURE VAULT ENABLED</span>
+		</div>
+	</footer>
+</body>
+
+</html>

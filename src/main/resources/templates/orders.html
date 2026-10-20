@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html class="dark" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>My Orders | NegotiateX</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#43ed9e",
+                        "on-primary": "#003920",
+                        "background": "#131313",
+                        "surface": "#131313",
+                        "surface-container": "#201f1f",
+                        "on-surface": "#e5e2e1",
+                        "on-surface-variant": "#bacbbd",
+                        "outline-variant": "#3c4a40",
+                    },
+                    fontFamily: { body: ["Inter"] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { font-family: 'Inter', sans-serif; background-color: #131313; color: #E5E2E1; }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen pt-20">
+
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full h-16 bg-[#131313]/90 backdrop-blur-xl z-40 flex justify-between items-center px-8 border-b border-outline-variant/30">
+    <div class="flex items-center gap-8">
+        <a href="/" class="text-primary font-black text-xl tracking-tighter">Negotiate<span class="text-on-surface">X</span></a>
+        <nav class="hidden md:flex gap-6">
+            <a href="/catalog" class="text-sm font-medium text-on-surface-variant hover:text-white transition">Catalog</a>
+            <a href="/offers" class="text-sm font-medium text-on-surface-variant hover:text-white transition">Negotiations</a>
+            <a href="/orders" class="text-sm font-medium text-primary border-b-2 border-primary transition">Orders</a>
+        </nav>
+    </div>
+    <div class="flex items-center gap-4">
+        <span class="text-sm font-mono tracking-tighter" th:text="${username}">user@email.com</span>
+        <span th:if="${isSeller}" class="text-[10px] font-bold tracking-widest text-[#43ed9e] uppercase border border-[#43ed9e]/30 px-2 py-0.5 rounded">Seller Mode</span>
+        <span th:unless="${isSeller}" class="text-[10px] font-bold tracking-widest text-blue-400 uppercase border border-blue-400/30 px-2 py-0.5 rounded">Buyer Mode</span>
+        <!-- Optional Logout Form -->
+    </div>
+</header>
+
+<main class="p-8 max-w-7xl mx-auto">
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-8 border-b border-outline-variant/20 pb-6">
+        <div>
+            <h1 class="text-4xl font-black tracking-tight flex items-center gap-3">
+                <span th:if="${isSeller}">Outbound Dispatch</span>
+                <span th:unless="${isSeller}">Inbound Deliveries</span>
+            </h1>
+            <p class="text-on-surface-variant text-sm mt-2">Manage your operational workflow and fulfillment.</p>
+        </div>
+        <div class="mt-6 flex gap-4 lg:mt-0">
+            <a href="/catalog" class="bg-surface-container hover:bg-surface-container-high transition-all py-2 px-4 rounded-lg font-bold text-sm border border-outline-variant/30 flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">storefront</span> Back to Catalog
+            </a>
+            <a th:if="${isSeller}" href="/seller/dashboard" class="bg-surface-container hover:bg-surface-container-high transition-all py-2 px-4 rounded-lg font-bold text-sm border border-outline-variant/30 flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">dashboard</span> Seller Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- The Content Container -->
+    <div class="bg-surface-container rounded-xl overflow-hidden border border-outline-variant/30 shadow-2xl">
+        <div th:if="${orders.empty}" class="p-16 text-center text-on-surface-variant">
+            <span class="material-symbols-outlined text-6xl opacity-30 mb-4 block">package_2</span>
+            <p class="font-medium">No active orders found.</p>
+            <p class="text-sm mt-1">Accept negotiations to generate fulfillment orders.</p>
+        </div>
+
+        <div th:unless="${orders.empty}" class="overflow-x-auto">
+            <table class="w-full text-left border-collapse min-w-[800px]">
+                <thead class="bg-[#1c1b1b] border-b border-outline-variant/30">
+                    <tr>
+                        <th class="py-4 px-6 text-[10px] font-bold tracking-widest uppercase text-on-surface-variant w-[20%]">Asset</th>
+                        <th class="py-4 px-6 text-[10px] font-bold tracking-widest uppercase text-on-surface-variant w-[15%]" th:text="${isSeller ? 'Purchaser' : 'Seller'}">Role</th>
+                        <th class="py-4 px-6 text-[10px] font-bold tracking-widest uppercase text-on-surface-variant text-center w-[15%]">Qty x Price</th>
+                        <th class="py-4 px-6 text-[10px] font-bold tracking-widest uppercase text-on-surface-variant text-center w-[15%]">Total Cost</th>
+                        <th class="py-4 px-6 text-[10px] font-bold tracking-widest uppercase text-on-surface-variant text-center w-[15%]">Status</th>
+                        <th th:if="${isSeller}" class="py-4 px-6 text-[10px] font-bold tracking-widest uppercase text-on-surface-variant text-right w-[20%]">Dispatch Action</th>
+                        <th th:unless="${isSeller}" class="py-4 px-6 text-[10px] font-bold tracking-widest uppercase text-on-surface-variant text-right w-[20%]">Payment</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-outline-variant/20">
+                    <tr th:each="order : ${orders}" class="hover:bg-[#1c1b1b]/50 transition-colors">
+                        <!-- Asset Name -->
+                        <td class="py-5 px-6">
+                            <p class="font-bold text-on-surface tracking-tight" th:text="${order.productName}">Product</p>
+                            <p class="text-[10px] text-on-surface-variant uppercase tracking-widest mt-1 font-mono" th:text="${#temporals.format(order.createdAt, 'dd MMM yyyy HH:mm')}">Date</p>
+                        </td>
+                        
+                        <!-- Role -->
+                        <td class="py-5 px-6">
+                            <span class="text-sm font-medium text-on-surface-variant" th:text="${isSeller ? order.buyerName : order.sellerName}">Name</span>
+                        </td>
+
+                        <!-- Qty x Price -->
+                        <td class="py-5 px-6 text-center">
+                            <span class="text-sm font-bold text-on-surface/80" th:text="${order.quantity} + ' x $' + ${order.unitPrice}">1 x $0</span>
+                        </td>
+
+                        <!-- Total Cost -->
+                        <td class="py-5 px-6 text-center">
+                            <p class="font-black text-primary tracking-tight text-lg" th:text="'$' + ${order.totalPrice}">$0.00</p>
+                        </td>
+
+                        <!-- Status Badge -->
+                        <td class="py-5 px-6 text-center">
+                            <span th:if="${order.status == 'PLACED'}" class="bg-blue-900/40 text-blue-400 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase border border-blue-400/20">Processing</span>
+                            <span th:if="${order.status == 'SHIPPED'}" class="bg-purple-900/40 text-purple-400 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase border border-purple-400/20">In Transit</span>
+                            <span th:if="${order.status == 'DELIVERED'}" class="bg-green-900/40 text-green-400 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase border border-green-400/20">Delivered</span>
+                            <span th:if="${order.status == 'CANCELLED'}" class="bg-red-900/40 text-red-400 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase border border-red-400/20">Cancelled</span>
+                        </td>
+
+                        <!-- Dispatch Action Selector (Sellers Only) -->
+                        <td th:if="${isSeller}" class="py-5 px-6 text-right">
+                            <select th:if="${order.status != 'DELIVERED' and order.status != 'CANCELLED'}" 
+                                    th:data-order-id="${order.id}"
+                                    onchange="updateStatus(this.getAttribute('data-order-id'), this.value)"
+                                    class="bg-surface-container-lowest border border-outline-variant/50 text-sm font-bold uppercase tracking-widest rounded-lg px-3 py-2 text-primary focus:ring-1 focus:ring-primary">
+                                <option value="" disabled selected>Update...</option>
+                                <option value="SHIPPED" th:if="${order.status == 'PLACED'}" class="text-on-surface bg-surface-container">Mark Shipped</option>
+                                <option value="DELIVERED" th:if="${order.status == 'SHIPPED'}" class="text-on-surface bg-surface-container">Mark Delivered</option>
+                                <option value="CANCELLED" class="text-red-400 bg-surface-container">Cancel</option>
+                            </select>
+                            <span th:if="${order.status == 'DELIVERED' or order.status == 'CANCELLED'}" class="text-[10px] tracking-widest text-on-surface-variant uppercase font-bold">Action Locked</span>
+                        </td>
+                        
+                        <!-- Payment Action (Buyers Only) -->
+                        <td th:unless="${isSeller}" class="py-5 px-6 text-right">
+                            <button th:if="${order.status == 'PLACED'}" 
+                                    th:data-order-id="${order.id}"
+                                    th:data-amount="${order.totalPrice}"
+                                    onclick="initPayment(this.getAttribute('data-order-id'), this.getAttribute('data-amount'))"
+                                    class="bg-primary hover:bg-[#2eaa6d] text-on-primary font-bold px-4 py-2 rounded-lg text-sm tracking-widest transition-all shadow-[0_0_15px_rgba(67,237,158,0.3)] hover:shadow-[0_0_25px_rgba(67,237,158,0.5)] flex items-center gap-2 ml-auto">
+                                <span class="material-symbols-outlined text-sm">payment</span> PAY NOW
+                            </button>
+                            <span th:if="${order.status == 'DELIVERED' or order.status == 'SHIPPED'}" class="text-[10px] tracking-widest text-[#43ed9e] uppercase font-bold flex items-center gap-1 justify-end">
+                                <span class="material-symbols-outlined text-xs">check_circle</span> PAID SECURELY
+                            </span>
+                            <span th:if="${order.status == 'CANCELLED'}" class="text-[10px] tracking-widest text-on-surface-variant uppercase font-bold">CANCELLED</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<!-- Payment Modal Background (Hidden by default) -->
+<div id="paymentModalOverlay" class="fixed inset-0 bg-black/80 backdrop-blur-[2px] z-50 hidden flex justify-center items-center">
+    <div class="bg-[#1c1b1b] border border-outline-variant/30 w-[400px] rounded-2xl p-8 shadow-2xl scale-95 opacity-0 transition-all duration-300 transform" id="paymentModalContent">
+        <div class="flex items-center gap-3 mb-2">
+            <span class="material-symbols-outlined text-primary text-3xl">verified_user</span>
+            <h3 class="text-2xl font-black text-white tracking-tighter">MOCK CHECKOUT</h3>
+        </div>
+        <p class="text-on-surface-variant text-sm mb-6">Simulating Razorpay Payment Gateway.</p>
+        
+        <div class="bg-[#131313] rounded-xl p-5 mb-6 border border-outline-variant/30 shadow-inner">
+            <p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest mb-1">Total Amount Due</p>
+            <p class="text-4xl font-mono text-primary font-bold tracking-tighter" id="modalAmount">$0.00</p>
+            <div class="mt-4 pt-4 border-t border-outline-variant/20">
+                <p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest">Transaction ID</p>
+                <p id="modalTxnId" class="font-mono text-xs text-white mt-1 opacity-70">mock_txn_123</p>
+            </div>
+        </div>
+
+        <button id="btnSimulateSuccess" class="w-full bg-primary hover:bg-[#2eaa6d] text-on-primary font-black py-4 rounded-xl shadow-[0_0_20px_rgba(67,237,158,0.2)] hover:shadow-[0_0_30px_rgba(67,237,158,0.4)] transition-all flex justify-center items-center gap-2 mb-3 text-lg tracking-wide">
+            <span class="material-symbols-outlined">done_all</span> SIMULATE SUCCESS
+        </button>
+        <button onclick="closeModal()" class="w-full bg-surface-container hover:bg-[#353534] border border-outline-variant/50 text-white font-bold py-3 text-sm rounded-xl transition-all">
+            CANCEL PAYMENT
+        </button>
+    </div>
+</div>
+
+<script>
+    var currentTransactionId = null;
+
+    async function initPayment(orderId, amount) {
+        try {
+            const res = await fetch('/api/v1/payments/init', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderId: orderId })
+            });
+
+            if(res.ok) {
+                const data = await res.json();
+                currentTransactionId = data.transactionId;
+                
+                document.getElementById('modalAmount').innerText = '$' + amount;
+                document.getElementById('modalTxnId').innerText = currentTransactionId;
+                
+                const overlay = document.getElementById('paymentModalOverlay');
+                const content = document.getElementById('paymentModalContent');
+                overlay.classList.remove('hidden');
+                
+                setTimeout(function() {
+                    content.classList.remove('scale-95', 'opacity-0');
+                    content.classList.add('scale-100', 'opacity-100');
+                }, 10);
+
+            } else {
+                alert('Payment Gateway Unreachable.');
+            }
+        } catch (e) {
+            alert('Payment initialization failed: ' + e);
+        }
+    }
+
+    function closeModal() {
+        const overlay = document.getElementById('paymentModalOverlay');
+        const content = document.getElementById('paymentModalContent');
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+        setTimeout(function() { overlay.classList.add('hidden'); }, 300);
+    }
+
+    document.getElementById('btnSimulateSuccess').addEventListener('click', async function() {
+        if(!currentTransactionId) return;
+        
+        try {
+            const res = await fetch('/api/v1/payments/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ transactionId: currentTransactionId })
+            });
+
+            if(res.ok) {
+                window.location.reload();
+            } else {
+                alert('Payment Verification Failed!');
+                closeModal();
+            }
+        } catch (e) {
+            alert('Verification crashed: ' + e);
+            closeModal();
+        }
+    });
+
+    async function updateStatus(orderId, newStatus) {
+        if (!newStatus) return;
+        if (!confirm('Are you sure you want to change the status to ' + newStatus + '?')) {
+            window.location.reload();
+            return;
+        }
+
+        try {
+            const resp = await fetch('/api/v1/orders/' + orderId + '/status', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            });
+
+            if (resp.ok) {
+                window.location.reload();
+            } else {
+                const err = await resp.text();
+                alert('Status update failed: ' + err);
+                window.location.reload();
+            }
+        } catch (e) {
+            alert('Network error updating status');
+            window.location.reload();
+        }
+    }
+</script>
+
+</body>
+</html>

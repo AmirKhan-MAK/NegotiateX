@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: negotiatex
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/negotiatex_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  security:
+    # Disable basic security for now until we implement JWT
+    basic:
+      enabled: false
+
+gemini:
+  api:
+    key: AIzaSyBeM703-yJG9YeDeGSuQzzeMj4lUyfQLrs
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent
+
+server:
+  port: 8080

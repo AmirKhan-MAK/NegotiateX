@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Seller Dashboard - NegotiateX</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "surface-container-low": "#1c1b1b",
+                    "surface-container": "#201f1f",
+                    "surface-container-highest": "#353534",
+                    "primary": "#43ed9e",
+                    "on-primary": "#003920",
+                    "background": "#131313",
+                    "on-surface": "#e5e2e1",
+                    "on-surface-variant": "#bacbbd",
+                    "outline-variant": "#3c4a40",
+                },
+                fontFamily: { headline: ["Inter"], body: ["Inter"], label: ["Inter"] }
+            }
+        }
+    }
+</script>
+<style>
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    body { font-family: 'Inter', sans-serif; }
+</style>
+</head>
+<body class="bg-background text-on-surface min-h-screen">
+
+<nav class="fixed top-0 w-full z-50 bg-[#131313]/90 backdrop-blur-xl border-b border-outline-variant/30">
+    <div class="flex justify-between items-center px-8 py-4 w-full mx-auto">
+        <div class="flex items-center gap-12">
+            <a href="/" class="text-2xl font-black text-[#43ED9E] tracking-tighter">Negotiate<span class="text-white">X</span></a>
+            <nav class="hidden md:flex gap-6">
+                <a href="/catalog" class="text-sm font-medium text-on-surface-variant hover:text-white transition">Catalog</a>
+                <a href="/offers" class="text-sm font-medium text-on-surface-variant hover:text-white transition">My Negotiations</a>
+                <a href="/orders" class="text-sm font-medium text-on-surface-variant hover:text-white transition">Orders</a>
+                <a href="/seller/dashboard" class="text-sm font-medium text-primary border-b-2 border-primary transition">Seller Dashboard</a>
+            </nav>
+        </div>
+    </div>
+    <div class="absolute right-8 top-4 flex items-center gap-4">
+        <th:block th:if="${isLoggedIn}">
+            <span class="text-xs font-bold text-outline-variant" th:text="${username}">user@email.com</span>
+            <form action="/api/v1/auth/logout" method="post" class="inline">
+                <button type="submit" class="bg-[#201f1f] text-[#E5E2E1] px-4 py-2 rounded-full text-sm font-bold transition-all hover:bg-[#353534]">Log Out</button>
+            </form>
+        </th:block>
+    </div>
+</nav>
+
+<main class="max-w-4xl mx-auto px-6 py-24">
+    <div class="mb-12">
+        <h2 class="text-4xl font-extrabold tracking-tighter mb-2">Seller Overview</h2>
+        <p class="text-on-surface-variant">Monitor your analytics and manage your product catalog.</p>
+    </div>
+
+    <!-- Analytics Dashboard -->
+    <section class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+        <!-- Total Products Listed -->
+        <div class="bg-[#1c1b1b] border border-outline-variant/30 rounded-xl p-6 shadow-md hover:bg-[#201f1f] transition-all">
+            <h3 class="text-on-surface-variant text-xs font-bold uppercase tracking-widest mb-2">Total GMV</h3>
+            <p class="text-3xl font-black text-on-surface" th:text="'$' + ${metrics.totalGmv}">$0</p>
+        </div>
+        
+        <!-- Active Negotiations -->
+        <div class="bg-[#1c1b1b] border border-outline-variant/30 rounded-xl p-6 shadow-md hover:bg-[#201f1f] transition-all">
+            <h3 class="text-on-surface-variant text-xs font-bold uppercase tracking-widest mb-2">Total Delivered</h3>
+            <p class="text-3xl font-black text-[#43ED9E]" th:text="${metrics.totalOrders}">0</p>
+        </div>
+
+        <!-- Lifetime Value (Completed Revenue) -->
+        <div class="bg-[#1c1b1b] border border-outline-variant/30 rounded-xl p-6 shadow-md hover:bg-[#201f1f] transition-all col-span-1 md:col-span-2">
+            <h3 class="text-on-surface-variant text-xs font-bold uppercase tracking-widest mb-2">Offer Conversion Rate</h3>
+            <p class="text-3xl font-black text-primary tracking-tighter" th:text="${#numbers.formatDecimal(metrics.offerConversionRate * 100, 1, 1)} + '%'">0.0%</p>
+            <p class="text-[10px] text-on-surface-variant uppercase mt-1" th:text="${metrics.totalOffersReceived} + ' Offers Evaluated from Buyers'">0 Offers Evaluated</p>
+        </div>
+    </section>
+
+    <div class="mb-8 border-t border-outline-variant/20 pt-12">
+        <h2 class="text-3xl font-extrabold tracking-tighter mb-2">Create New Listing</h2>
+        <p class="text-on-surface-variant text-sm">Define your product details and parameters for the automated negotiation system.</p>
+    </div>
+
+    <!-- ADD PRODUCT FORM -->
+    <form id="productForm" class="space-y-8">
+        
+        <section class="bg-surface-container rounded-xl p-8 border border-outline-variant/10 shadow-sm">
+            <h3 class="text-xl font-bold mb-6">General Information</h3>
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-xs font-bold text-on-surface-variant uppercase mb-2">Product Name</label>
+                    <input id="name" required type="text" class="w-full bg-surface-container-low border-none rounded-lg py-4 px-5 focus:ring-1 focus:ring-primary/40"/>
+                </div>
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold text-on-surface-variant uppercase mb-2">Product Image (Upload)</label>
+                        <div class="relative w-full flex items-center">
+                            <input id="imageFile" type="file" accept="image/*" class="w-full bg-surface-container-low border-none rounded-lg py-3 px-3 focus:ring-1 focus:ring-primary/40 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#353534] file:text-white hover:file:bg-[#43ED9E] hover:file:text-black transition-all cursor-pointer"/>
+                            <input type="hidden" id="imageUrl" value=""/>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-on-surface-variant uppercase mb-2">Total Stock (Qty)</label>
+                        <input id="stock" required type="number" min="1" value="10" class="w-full bg-surface-container-low border-none rounded-lg py-4 px-5 focus:ring-1 focus:ring-primary/40"/>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-on-surface-variant uppercase mb-2">Description</label>
+                    <textarea id="description" required rows="4" class="w-full bg-surface-container-low border-none rounded-lg py-4 px-5 focus:ring-1 focus:ring-primary/40"></textarea>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-surface-container rounded-xl p-8 border border-outline-variant/10 shadow-sm">
+            <h3 class="text-xl font-bold mb-6">Negotiation Parameters</h3>
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-xs font-bold text-on-surface-variant uppercase mb-2">Base Price (USD)</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">$</span>
+                        <input id="basePrice" required type="number" step="0.01" class="w-full bg-surface-container-low border-none rounded-lg py-4 pl-10 focus:ring-1 focus:ring-primary/40 text-lg font-mono"/>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold font-bold text-on-surface-variant uppercase mb-2">Minimum Acceptable Price (Floor)</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">$</span>
+                        <input id="floorPrice" required type="number" step="0.01" class="w-full bg-surface-container-low border-none rounded-lg py-4 pl-10 focus:ring-1 focus:ring-primary/40 text-lg font-mono"/>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-[#1c1b1b] rounded-xl p-8 border border-[#43ed9e]/30 shadow-[0_0_15px_rgba(67,237,158,0.1)] relative overflow-hidden">
+            <div class="absolute top-0 right-0 bg-[#43ed9e] text-black text-[10px] font-black uppercase px-3 py-1 rounded-bl-lg">Beta Feature</div>
+            <div class="flex items-center gap-3 mb-6">
+                <span class="material-symbols-outlined text-[#43ed9e] text-3xl">smart_toy</span>
+                <h3 class="text-xl font-bold text-white">AI Negotiator Configuration</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <div class="flex items-center justify-between bg-surface-container border border-outline-variant/30 rounded-lg p-4">
+                    <div>
+                        <p class="text-sm font-bold text-white">Enable Auto-Negotiation</p>
+                        <p class="text-xs text-on-surface-variant mt-1">Let our AI agent negotiate on your behalf while you are offline.</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="aiNegotiationEnabled" class="sr-only peer">
+                        <div class="w-11 h-6 bg-surface-container-low peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#43ed9e] peer-checked:after:bg-black"></div>
+                    </label>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-on-surface-variant uppercase mb-2">AI Target Price (Goal)</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">$</span>
+                        <input id="aiTargetPrice" type="number" step="0.01" placeholder="e.g. 920.00" class="w-full bg-surface-container border border-outline-variant/30 rounded-lg py-4 pl-10 focus:ring-1 focus:ring-[#43ed9e] text-lg font-mono text-[#43ed9e]"/>
+                    </div>
+                    <p class="text-[10px] text-on-surface-variant mt-2">The ideal price the AI will try to persuade the buyer to accept. Must be &ge; Floor Price.</p>
+                </div>
+            </div>
+        </section>
+
+        <button type="submit" class="w-full py-4 rounded-lg bg-primary text-on-primary font-extrabold uppercase hover:brightness-110 active:scale-95 transition-all">Launch Listing</button>
+    </form>
+</main>
+
+<script>
+    document.getElementById('productForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const btn = e.target.querySelector('button[type="submit"]');
+        btn.textContent = "Publishing...";
+        btn.disabled = true;
+
+        const fileInput = document.getElementById('imageFile');
+        let finalImageUrl = document.getElementById('imageUrl').value || null;
+
+        if (fileInput.files.length > 0) {
+            btn.textContent = "Uploading Media...";
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            try {
+                const uploadRes = await fetch('/api/v1/storage/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                if(uploadRes.ok) {
+                    const uploadData = await uploadRes.json();
+                    finalImageUrl = uploadData.url;
+                } else {
+                    alert('Image upload failed');
+                    btn.textContent = "Launch Listing";
+                    btn.disabled = false;
+                    return;
+                }
+            } catch(e) {
+                alert('Image upload error: ' + e);
+                btn.textContent = "Launch Listing";
+                btn.disabled = false;
+                return;
+            }
+        }
+        
+        btn.textContent = "Publishing to Vault...";
+
+        const product = {
+            name: document.getElementById('name').value,
+            description: document.getElementById('description').value,
+            imageUrl: finalImageUrl,
+            basePrice: parseFloat(document.getElementById('basePrice').value),
+            floorPrice: parseFloat(document.getElementById('floorPrice').value),
+            stock: parseInt(document.getElementById('stock').value),
+            negotiable: true,
+            isNearExpiry: false,
+            // Exclude Category for MVP test to prevent ID constraint failure
+            categoryId: null,  
+            aiNegotiationEnabled: document.getElementById('aiNegotiationEnabled').checked,
+            aiTargetPrice: document.getElementById('aiTargetPrice').value ? parseFloat(document.getElementById('aiTargetPrice').value) : null,
+            bulkTiers: []
+        };
+        
+        try {
+            const response = await fetch('/api/v1/products/seller', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(product)
+            });
+            
+            if(response.ok) {
+                alert('Success! Your product is now live on the Obsidian Vault.');
+                window.location.href = '/catalog';
+            } else {
+                // Not authenticated or other error
+                if(response.status === 403) {
+                    alert('Error 403: You must be logged in to create listings. Please log in first!');
+                    window.location.href = '/login';
+                } else {
+                    const err = await response.text();
+                    alert('Failed to publish: ' + err);
+                }
+            }
+        } catch(err) {
+            alert('Fetch error: ' + err);
+        } finally {
+            btn.textContent = "Launch Listing";
+            btn.disabled = false;
+        }
+    });
+</script>
+</body></html>

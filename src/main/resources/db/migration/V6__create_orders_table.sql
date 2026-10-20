@@ -1,0 +1,20 @@
+CREATE TABLE orders (
+    id          VARCHAR(36)   PRIMARY KEY DEFAULT (UUID()),
+    buyer_id    VARCHAR(36)   NOT NULL,
+    seller_id   VARCHAR(36)   NOT NULL,
+    offer_id    VARCHAR(36)   NULL,
+    product_id  VARCHAR(36)   NOT NULL,
+    quantity    INT           NOT NULL,
+    unit_price  DECIMAL(12,2) NOT NULL,
+    total_price DECIMAL(12,2) NOT NULL,
+    status      ENUM('PLACED','SHIPPED','DELIVERED','CANCELLED') DEFAULT 'PLACED',
+    created_at  TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (buyer_id)   REFERENCES users(id),
+    FOREIGN KEY (seller_id)  REFERENCES users(id),
+    FOREIGN KEY (offer_id)   REFERENCES offers(id),
+    FOREIGN KEY (product_id) REFERENCES products(id),
+    INDEX idx_orders_buyer  (buyer_id, status),
+    INDEX idx_orders_seller (seller_id),
+    INDEX idx_orders_offer  (offer_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

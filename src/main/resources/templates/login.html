@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8" />
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet" />
+	<link
+		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+		rel="stylesheet" />
+	<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+	<script id="tailwind-config">
+		tailwind.config = {
+			darkMode: "class",
+			theme: {
+				extend: {
+					"colors": {
+						"on-primary-fixed": "#002111",
+						"on-error": "#690005",
+						"primary-fixed": "#59fead",
+						"on-tertiary": "#003731",
+						"surface-container-lowest": "#0e0e0e",
+						"outline-variant": "#3c4a40",
+						"surface": "#131313",
+						"secondary": "#adc6ff",
+						"primary-fixed-dim": "#31e193",
+						"on-tertiary-container": "#005148",
+						"inverse-on-surface": "#313030",
+						"on-secondary-container": "#e6ecff",
+						"surface-variant": "#353534",
+						"on-secondary": "#002e6a",
+						"on-error-container": "#ffdad6",
+						"on-secondary-fixed-variant": "#004395",
+						"error-container": "#93000a",
+						"inverse-primary": "#006d43",
+						"tertiary": "#4de8d3",
+						"inverse-surface": "#e5e2e1",
+						"surface-tint": "#31e193",
+						"on-tertiary-fixed": "#00201c",
+						"on-primary": "#003920",
+						"surface-bright": "#393939",
+						"error": "#ffb4ab",
+						"tertiary-fixed-dim": "#3cddc7",
+						"on-surface-variant": "#bacbbd",
+						"background": "#131313",
+						"on-tertiary-fixed-variant": "#005047",
+						"surface-container-high": "#2a2a2a",
+						"on-secondary-fixed": "#001a42",
+						"on-primary-container": "#005331",
+						"surface-dim": "#131313",
+						"surface-container-highest": "#353534",
+						"tertiary-fixed": "#62fae3",
+						"secondary-fixed": "#d8e2ff",
+						"primary-container": "#00d084",
+						"primary": "#43ed9e",
+						"surface-container-low": "#1c1b1b",
+						"on-primary-fixed-variant": "#005231",
+						"secondary-fixed-dim": "#adc6ff",
+						"on-background": "#e5e2e1",
+						"secondary-container": "#0566d9",
+						"tertiary-container": "#1bccb7",
+						"surface-container": "#201f1f",
+						"outline": "#859588",
+						"on-surface": "#e5e2e1"
+					},
+					"borderRadius": {
+						"DEFAULT": "0.125rem",
+						"lg": "0.25rem",
+						"xl": "0.5rem",
+						"full": "0.75rem"
+					},
+					"fontFamily": {
+						"headline": ["Inter"],
+						"body": ["Inter"],
+						"label": ["Inter"]
+					}
+				},
+			},
+		}
+	</script>
+	<style>
+		.glass-panel {
+			background: rgba(53, 53, 52, 0.6);
+			backdrop-filter: blur(20px);
+			border: 1px solid rgba(133, 149, 136, 0.1);
+		}
+
+		.text-glow {
+			text-shadow: 0 0 15px rgba(67, 237, 158, 0.4);
+		}
+	</style>
+</head>
+
+<body class="bg-surface font-body text-on-surface antialiased min-h-screen flex flex-col">
+	<header class="fixed top-0 w-full z-50 flex justify-between items-center px-8 py-6">
+		<a href="/" class="text-2xl font-black tracking-tighter text-primary">NegotiateX</a>
+		<div class="hidden md:block">
+			<span class="text-on-surface-variant text-sm tracking-wider uppercase font-medium">The Digital
+				Concierge</span>
+		</div>
+	</header>
+	<main class="flex-grow flex items-center justify-center relative px-4 py-20 overflow-hidden">
+		<div class="absolute top-1/4 -left-20 w-96 h-96 bg-primary/5 rounded-full blur-[120px]"></div>
+		<div class="absolute bottom-1/4 -right-20 w-96 h-96 bg-secondary-container/5 rounded-full blur-[120px]"></div>
+		<div class="w-full max-w-[440px] z-10">
+			<div class="glass-panel p-10 rounded-xl shadow-[0_40px_80px_rgba(0,0,0,0.5)]">
+				<div class="mb-10 space-y-2">
+					<h1 class="text-3xl font-bold tracking-tight text-on-surface leading-none">Welcome Back</h1>
+					<p class="text-on-surface-variant text-sm font-medium tracking-wide">Enter your credentials to
+						access your dashboard.</p>
+				</div>
+				<form class="space-y-6" action="/api/v1/auth/login" method="POST">
+					<div class="space-y-2">
+						<label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant px-1"
+							for="email">
+							Email Address
+						</label>
+						<div class="relative group">
+							<div
+								class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-on-surface-variant group-focus-within:text-primary transition-colors">
+								<span class="material-symbols-outlined text-[20px]">alternate_email</span>
+							</div>
+							<input
+								class="w-full bg-surface-container-low text-on-surface placeholder:text-outline/50 border-none rounded-lg py-4 pl-12 pr-4 focus:ring-1 focus:ring-primary/40 focus:bg-surface-container-highest transition-all outline-none"
+								id="email" name="email" placeholder="name@enterprise.com" type="email" required />
+						</div>
+					</div>
+					<div class="space-y-2">
+						<div class="flex justify-between items-end px-1">
+							<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant"
+								for="password">
+								Password
+							</label>
+							<a class="text-[10px] uppercase font-bold tracking-tighter text-on-surface-variant hover:text-primary transition-colors"
+								href="#">Forgot Password?</a>
+						</div>
+						<div class="relative group">
+							<div
+								class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-on-surface-variant group-focus-within:text-primary transition-colors">
+								<span class="material-symbols-outlined text-[20px]">lock</span>
+							</div>
+							<input
+								class="w-full bg-surface-container-low text-on-surface placeholder:text-outline/50 border-none rounded-lg py-4 pl-12 pr-12 focus:ring-1 focus:ring-primary/40 focus:bg-surface-container-highest transition-all outline-none"
+								id="password" name="password" placeholder="••••••••" type="password" required />
+							<div
+								class="absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer text-on-surface-variant hover:text-on-surface">
+								<span class="material-symbols-outlined text-[20px]">visibility</span>
+							</div>
+						</div>
+					</div>
+					<div class="flex items-center space-x-2 px-1">
+						<input
+							class="w-4 h-4 rounded bg-surface-container-highest border-outline/20 text-primary focus:ring-offset-surface focus:ring-primary"
+							id="remember" type="checkbox" />
+						<label class="text-sm font-medium text-on-surface-variant select-none" for="remember">Remember
+							this device</label>
+					</div>
+					<div class="pt-4">
+						<button
+							class="w-full bg-primary hover:bg-primary-fixed-dim text-on-primary font-bold py-4 rounded-lg shadow-[0_0_20px_rgba(67,237,158,0.2)] active:scale-[0.98] transition-all duration-200 uppercase tracking-widest text-sm"
+							type="submit">
+							Access Exchange
+						</button>
+					</div>
+				</form>
+				<div class="mt-10 pt-8 border-t border-outline-variant/10 text-center">
+					<p class="text-on-surface-variant text-sm font-medium">
+						New to the concierge?
+						<a href="/register"
+							class="text-primary hover:underline underline-offset-4 ml-1 transition-all">Request
+							access</a>
+					</p>
+				</div>
+			</div>
+		</div>
+		<div
+			class="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center space-x-6 text-on-surface-variant/40">
+			<span class="text-[10px] uppercase tracking-[0.2em] font-black">Secure</span>
+			<span class="w-1 h-1 bg-outline-variant/30 rounded-full"></span>
+			<span class="text-[10px] uppercase tracking-[0.2em] font-black">Encrypted</span>
+			<span class="w-1 h-1 bg-outline-variant/30 rounded-full"></span>
+			<span class="text-[10px] uppercase tracking-[0.2em] font-black">Private</span>
+		</div>
+	</main>
+	<footer class="w-full border-t border-[#3C4A40]/15 bg-[#0E0E0E]">
+		<div class="flex flex-col md:flex-row justify-between items-center px-12 py-8 w-full max-w-screen-2xl mx-auto">
+			<div class="text-lg font-bold text-[#E5E2E1] mb-4 md:mb-0">NegotiateX</div>
+			<div class="flex flex-wrap justify-center gap-6 mb-4 md:mb-0">
+				<a class="text-[10px] uppercase tracking-[0.05em] font-medium text-[#BACBBD] hover:text-[#43ED9E] transition-colors"
+					href="#">Privacy Policy</a>
+				<a class="text-[10px] uppercase tracking-[0.05em] font-medium text-[#BACBBD] hover:text-[#43ED9E] transition-colors"
+					href="#">Terms of Service</a>
+				<a class="text-[10px] uppercase tracking-[0.05em] font-medium text-[#BACBBD] hover:text-[#43ED9E] transition-colors"
+					href="#">Security</a>
+				<a class="text-[10px] uppercase tracking-[0.05em] font-medium text-[#BACBBD] hover:text-[#43ED9E] transition-colors"
+					href="#">Contact</a>
+			</div>
+			<div class="text-[10px] uppercase tracking-[0.05em] font-medium text-[#BACBBD] opacity-80">
+				© 2024 NegotiateX. The Digital Concierge for High-Stakes Exchange.
+			</div>
+		</div>
+	</footer>
+</body>
+
+</html>
